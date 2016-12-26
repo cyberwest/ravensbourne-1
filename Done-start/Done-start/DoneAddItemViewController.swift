@@ -35,9 +35,16 @@ class DoneAddItemViewController: UIViewController {
     /* #9 Add a save button method that creates a new item from the textfield & segmented control */
     @IBAction func saveButtonPressed(_ sender: UIBarButtonItem) {
         
+        /* Create a new tod do item */
+        let item = ToDoItem(content: addItemTextField.text!, icon: iconSelected, addedByUser: user.email)
+        
+        /*Send this item back to the table view */
+        delegate?.addItemViewControllerDidSave(self, item: item)
     }
     
     @IBAction func cancelButtonPressed(_ sender: UIBarButtonItem) {
+        
+        delegate?.addItemViewControllerDidCancel(self)
         
     }
     

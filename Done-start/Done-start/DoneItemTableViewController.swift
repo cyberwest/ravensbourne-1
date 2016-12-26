@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class DoneItemTableViewController: UITableViewController, DoneAddItemViewControllerDelegate {
     
@@ -21,6 +22,8 @@ class DoneItemTableViewController: UITableViewController, DoneAddItemViewControl
     
     /* #2 Create dummy user data & items for testing */
     let user = User(uid: "fakeID", email: "louise@done.com")
+
+    let ref = FIRDatabase.database().reference(withPath: "to-dos")
     
     
     /* #1 Add an empty ToDoItem Array */
@@ -119,10 +122,28 @@ class DoneItemTableViewController: UITableViewController, DoneAddItemViewControl
     // MARK: Delegate Methods
     
     func addItemViewControllerDidCancel(_ controller: DoneAddItemViewController) {
+        navigationController!.popViewController(animated: true)
         
     }
     
     func addItemViewControllerDidSave(_ controller: DoneAddItemViewController, item: ToDoItem) {
+        
+        //Find the row to add our new item to
+        let rowIndex = items.count
+        //Create an index path to point to that row
+        let indexPath = IndexPath(row: rowIndex, section: 0)
+        //Add our new item to the items array
+        items.append(item)
+        //Insert the item into the table view
+        tableView.insertRows(at: [indexPath], with: .fade)
+        
+        //Create a new to-do item reference
+        let toDoItemRef = ref.child(item.content.lowercased())
+        toDoItemRef.setValue(item.toAnyObject())
+        
+        navigationController!.popViewController(animated: true)
+
+        
     }
     
     
@@ -131,7 +152,9 @@ class DoneItemTableViewController: UITableViewController, DoneAddItemViewControl
     /* #13 In order to create a new item, pass the user object forwards.*/
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
- 
+        let addItemViewController = segue.destination as! DoneAddItemViewController
+        
+        addItemViewController.delegate = self
         
     }
     

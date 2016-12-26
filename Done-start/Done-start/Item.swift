@@ -29,5 +29,13 @@ class ToDoItem {
         checked = !checked
     }
     
+    func toAnyObject() -> [String:AnyObject] {
+        return [
+       "content": content as AnyObject,
+       "checked": checked as AnyObject,
+            "icon": icon as AnyObject,
+            "addedByUser": addedByUser as AnyObject
+        ]
+    }
     
 }
